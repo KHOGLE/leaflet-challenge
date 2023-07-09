@@ -1,20 +1,22 @@
-
+// Create Map
 let myMap = L.map("map", {
     center: [40.76, -111.89],
     zoom: 5,
     layers: []
 });
 
+// Tilelayer
 var Stadia_AlidadeSmooth = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
 	maxZoom: 20,
 	attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
 }).addTo(myMap);
 
+// Get Earthquake Data
 let geoData = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson'
 
 d3.json(geoData).then(function(data){
-   //getFeatures(data.features);
     
+    // Marker color change based on earthquake depth
     function quakeColor(depth){
         if (depth < 10) return '#66ff00';
         else if (depth < 30) return '#bfff00';
@@ -24,11 +26,13 @@ d3.json(geoData).then(function(data){
         else return '#ff5500';
     }
 
+    //Marker size change based on magnitude
     function magnitude(mag){
         return mag * 6
     }
     
-    function getFeatures(feature){
+    //Marker Style
+    function getStyle(feature){
         // let markers = {
             return {
             radius: magnitude(feature.properties.mag),
@@ -36,46 +40,28 @@ d3.json(geoData).then(function(data){
             fillOpacity: 0.5,
             color: 'dimgrey',
             weight: 0.4}
-        // }
-    //     for (let i =0; i <earthquakes.length; i++) {
-    //         let lat = earthquakes[i].feature.geometry.coordinates[1];
-    //         let lng = earthquakes[i].feature.geometry.coordinates[0]
-    //         // markers.addLayer(L.cirle([lat,lng]))
-    //         L.circle()
-        
+
     }
-    L.geoJson(data,{
-        pointToLayer: function(feature,latlng){
-            return L.circleMarker(latlng);
-        },
-        style: getFeatures,
+    //Creating marker points
+    function myPoints(feature,latlng) {
+        return L.circleMarker(latlng);
+    }
+
+    //Marker properties
+    let circleProperties = {
+        pointToLayer: myPoints,
+        style: getStyle,
         onEachFeature: function(feature, layer){
             layer.bindPopup("<h3> Where: " + feature.properties.place + 
             "</h3><hr><p>" + new Date(feature.properties.time) + "</p>" + 
             "<br><h2> Magnitude: " + feature.properties.mag + "</h2>");
         }
-    }).addTo(myMap)
+    };
+
+    //GeoJson layer
+    L.geoJson(data, circleProperties).addTo(myMap);
     
-        // onEachFeature: function(feature, layer) {
-        //     layer.on({
-        //         mouseover:function(event){
-        //             layer = event.target;
-        //             layer.setStyle({
-        //                 fillOpacity:0.9
-        //             });
-        //         },
-        //         mouseout: function(event){
-        //             layer = event.target;
-        //             layer.setStyle({
-        //                 fillOpacity:0.5
-        //             });
-        //         },
-        //         click: function(event) {
-        //             layer.bindPopup("<h3> Where: " + feature.properties.place + 
-        //             "</h3><hr><p>" + new Date(feature.properties.time) + "</p>" + 
-        //             "<br><h2> Magnitude: " + feature.properties.mag + "</h2>");
-        //         }
-    
+    //Legend 
     let legend = L.control({position: "bottomright"});
 
     legend.onAdd = function(map){
@@ -91,7 +77,6 @@ d3.json(geoData).then(function(data){
     };
     
     legend.addTo(myMap);
-
 
 });
 
