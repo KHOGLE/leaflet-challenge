@@ -64,3 +64,7 @@ These requirements apply only to part 1.
 - Each point has a tooltip with the Magnitude, location, and depth. (10 points)
 - All data points load in the correct locations (10 points)
 
+### External Cited Sources for Code Building
+- TA Kyle for pointToLayer
+- Tutor Kourt for new L.LayerGroup
+- https://codepen.io/haakseth/pen/KQbjdO for building the legend
