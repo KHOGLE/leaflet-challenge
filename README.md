@@ -40,7 +40,7 @@ This part is completely optional; you can complete this part as a way to challen
 
 The following image is an example screenshot of what you should produce: 
 
-[tectonics](Images/5-Advanced.png)
+![tectonics](Images/5-Advanced.png)
 
 Perform the following tasks: 
 - Plot the tectonic plates dataset on the map in addition to the earthquakes. 
